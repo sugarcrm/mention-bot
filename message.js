@@ -28,5 +28,5 @@ module.exports = function(
   //
   //   @hunkim, thanks! @georgecodes and @vjeux, please review this.
 
-	return defaultMessageGenerator(reviewers, pullRequester);
+  return 'By analyzing the changes on this pull request, we identified ' + mentionSentenceBuilder(reviewers) + ' to be potential reviewers';
 };
