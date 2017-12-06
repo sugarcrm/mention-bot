@@ -453,7 +453,7 @@ async function getTeamMembership(
   return new Promise(function(resolve, reject) {
     github.orgs.getTeamMembership({
       id: teamData.id,
-      owner: creator
+      username: creator
     }, function(err, data) {
       if (err) {
         if (err.code === 404 &&
