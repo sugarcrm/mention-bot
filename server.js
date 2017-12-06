@@ -51,6 +51,7 @@ if (!process.env.GITHUB_USER) {
 }
 
 var github = new GitHubApi({
+  debug: true,
   host: config.github.apiHost,
   pathPrefix: config.github.pathPrefix,
   protocol: config.github.protocol,
