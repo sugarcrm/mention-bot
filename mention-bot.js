@@ -275,6 +275,10 @@ async function filterOwnTeam(
   org: string,
   github: Object
 ): Promise<Array<string>> {
+  console.log('users: ', users);
+  console.log('owners: ', owners);
+  console.log('org: ', org);
+
   if (!users.some(function(user) {
     return user.skipTeamPrs;
   })) {
@@ -341,6 +345,8 @@ async function getTeams(
   github: Object,
   page: number
 ): Promise<Array<TeamData>> {
+  console.log('tetting teams for org: ', org, ' page: ', page);
+
   const perPage = 100;
   return new Promise(function(resolve, reject) {
     github.orgs.getTeams({
@@ -441,6 +447,9 @@ async function getTeamMembership(
   teamData: TeamData,
   github: Object
 ): Promise<TeamMembership> {
+  console.log('creator: ', creator);
+  console.log('team data: ', teamData);
+
   return new Promise(function(resolve, reject) {
     github.orgs.getTeamMembership({
       id: teamData.id,
@@ -574,6 +583,8 @@ async function guessOwnersForPullRequest(
   config: Object,
   github: Object
 ): Promise<Array<string>> {
+
+
   const ownerAndRepo = repoURL.split('/').slice(-2);
   const cacheKey = `${repoURL}-pull-${id}.diff`.replace(/[^a-zA-Z0-9-_\.]/g, '-');
   const diff = await cacheGet(
