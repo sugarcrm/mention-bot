@@ -50,13 +50,22 @@ if (!process.env.GITHUB_USER) {
   );
 }
 
-var github = new GitHubApi({
-  //debug: true,
+var options = {
   host: config.github.apiHost,
   pathPrefix: config.github.pathPrefix,
   protocol: config.github.protocol,
   port: config.github.port
-});
+};
+
+if (process.env.DEBUG_MODE) {
+  options.debug = true;
+
+  console.warn(
+    'Running mention-bot in debug mode'
+  );
+}
+
+var github = new GitHubApi(options);
 
 github.authenticate({
   type: 'oauth',
