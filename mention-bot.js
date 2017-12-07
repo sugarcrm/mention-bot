@@ -468,7 +468,8 @@ async function getTeamMembership(
     }, function(err, data) {
       if (err) {
         if (err.code === 404 &&
-                err.message === '{"message":"Not Found","documentation_url":"https://developer.github.com/v3"}') {
+                err.message === '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/orgs/teams/#get-team-membership"}'
+              ) {
           resolve({name: teamData.name, state: 'nonmember'});
         } else {
           reject(err);
