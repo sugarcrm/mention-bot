@@ -245,6 +245,9 @@ async function getMatchingOwners(
 ): Promise<Array<string>> {
   var owners = [];
   var users = whitelist || [];
+  console.log('whitelist: ', whitelist);
+  console.log('users: ', users);
+  console.log('org: ', org);
 
   users.forEach(function(user) {
     let userHasChangedFile = false;
@@ -263,6 +266,7 @@ async function getMatchingOwners(
   });
 
   if (org) {
+    console.log('filtering own team');
     owners = await filterOwnTeam(users, owners, creator, org, github);
   }
   return owners;
@@ -282,6 +286,7 @@ async function filterOwnTeam(
   if (!users.some(function(user) {
     return user.skipTeamPrs;
   })) {
+    console.log('returning owners: ', owners);
     return owners;
   }
 
@@ -298,14 +303,20 @@ async function filterOwnTeam(
     return getTeamMembership(creator, teamInfo, github);
   });
   var teamMemberships = await Promise.all(promises);
+  console.log('memberships: ', teamMemberships);
   teamMemberships = teamMemberships.filter(function(membership) {
     return membership.state === 'active';
   });
-  return owners.filter(function(owner) {
+  console.log('filtering active members: ', teamMemberships);
+  var z =  owners.filter(function(owner) {
     return !teamMemberships.find(function(membership) {
         return owner === membership.name;
     });
   });
+
+  console.log('filtering owner: ', z);
+
+  return z;
 }
 
 /**
@@ -345,7 +356,7 @@ async function getTeams(
   github: Object,
   page: number
 ): Promise<Array<TeamData>> {
-  console.log('tetting teams for org: ', org, ' page: ', page);
+  console.log('getting teams for org: ', org, ' page: ', page);
 
   const perPage = 100;
   return new Promise(function(resolve, reject) {
@@ -584,7 +595,14 @@ async function guessOwnersForPullRequest(
   github: Object
 ): Promise<Array<string>> {
 
-
+console.log('executing guessOwnersForPullRequest');
+console.log('id: ', id);
+console.log('creator: ', creator);
+console.log('target branch: ', targetBranch);
+console.log('private repo: ', privateRepo);
+console.log('org: ', org);
+//console.log('config: ', config);
+console.log('------------------------------------');
   const ownerAndRepo = repoURL.split('/').slice(-2);
   const cacheKey = `${repoURL}-pull-${id}.diff`.replace(/[^a-zA-Z0-9-_\.]/g, '-');
   const diff = await cacheGet(
@@ -593,9 +611,14 @@ async function guessOwnersForPullRequest(
   );
   var files = parseDiff(diff);
   var defaultOwners = await getMatchingOwners(files, config.alwaysNotifyForPaths, creator, org, github);
+  console.log('default owners: ', defaultOwners);
   var fallbackOwners = await getMatchingOwners(files, config.fallbackNotifyForPaths, creator, org, github);
+  console.log('fallback owners: ', fallbackOwners);
   if (!config.findPotentialReviewers) {
+      console.log('returning default owners: ', defaultOwners);
       return defaultOwners;
+  } else {
+    console.log('falling back to default behavior: blame history');
   }
 
   // There are going to be degenerated changes that end up modifying hundreds

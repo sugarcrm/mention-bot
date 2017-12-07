@@ -87,6 +87,8 @@ if (USERNAME) {
   jar.parseHeaders(headers);
   if (jar.cookies['logged_in'] === 'no') {
     console.error(`Login to ${USERNAME} failed`);
+  } else {
+    console.info(`Login with ${USERNAME} succeeded`);
   }
 
   module.exports = jar.get();
